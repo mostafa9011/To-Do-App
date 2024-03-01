@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomTextField extends StatefulWidget {
+class CustomTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final bool? isPassword;
   final String? hint;
@@ -19,7 +19,7 @@ class CustomTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final Color? hintColor;
 
-  const CustomTextField({
+  const CustomTextFormField({
     super.key,
     this.controller,
     this.isPassword,
@@ -47,10 +47,10 @@ class CustomTextField extends StatefulWidget {
   });
 
   @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
   bool obscureText = true;
 
   @override

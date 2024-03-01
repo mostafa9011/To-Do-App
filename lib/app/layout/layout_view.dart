@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/app/layout/widgets/custom_bottem_app_bar.dart';
+import 'package:todo_app/app/layout/widgets/custom_floating_action_Button.dart';
 import 'package:todo_app/app/settings/pages/settings_view.dart';
 import 'package:todo_app/app/tasks/pages/task_view.dart';
 
@@ -28,10 +29,7 @@ class _LayoutViewState extends State<LayoutView> {
           });
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const CustomFloatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: screens[currentIndex],
     );
