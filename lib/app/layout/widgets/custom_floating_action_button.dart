@@ -21,7 +21,10 @@ class CustomFloatingActionButton extends StatelessWidget {
           ),
           context: context,
           builder: (context) {
-            return const ModalSheet();
+            return const ModalSheet(
+              title: 'Add A New Task',
+              buttonName: 'Add',
+            );
           },
         );
       },

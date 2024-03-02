@@ -17,7 +17,9 @@ class TaskView extends StatelessWidget {
               clipBehavior: Clip.none,
               alignment: Alignment(0, 1.7),
               children: [
-                CustomAppBarTitle(title: 'To Do List',),
+                CustomAppBarTitle(
+                  title: 'To Do List',
+                ),
                 CustomCalendar(),
               ],
             ),

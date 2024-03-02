@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBarTitle extends StatelessWidget {
-  const CustomAppBarTitle({super.key, required this.title});
+  const CustomAppBarTitle({
+    super.key,
+    required this.title,
+  });
   final String title;
 
   @override

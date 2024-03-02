@@ -1,18 +1,24 @@
+import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:todo_app/config/constants/constants.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
 import 'package:todo_app/config/widgets/custom_text_field.dart';
 
 class ModalSheet extends StatefulWidget {
-  const ModalSheet({super.key});
+  const ModalSheet({super.key, required this.title, required this.buttonName});
+  final String title;
+  final String buttonName;
 
   @override
   State<ModalSheet> createState() => _ModalSheetState();
 }
 
 class _ModalSheetState extends State<ModalSheet> {
-  String? title, content, date;
+  String? task, content, date;
+  CollectionReference tasks = FirebaseFirestore.instance.collection('Tasks');
   GlobalKey<FormState> formKey = GlobalKey();
 
   @override
@@ -21,8 +27,6 @@ class _ModalSheetState extends State<ModalSheet> {
     var mediaQuery = MediaQuery.of(context);
     var vm = BlocProvider.of<CubitSettings>(context);
     return Container(
-      // color: vm.isLight() ? Colors.white : const Color(0xff141922),
-
       padding: EdgeInsets.only(
           left: 40,
           right: 40,
@@ -34,15 +38,15 @@ class _ModalSheetState extends State<ModalSheet> {
           child: Column(
             children: [
               Text(
-                'Add A New Task',
+                widget.title,
                 style: theme.textTheme.bodyLarge!.copyWith(
                   color: vm.isLight() ? Colors.black : Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               CustomTextFormField(
-                onSaved: (value) {
-                  title = value;
+                onChanged: (value) {
+                  task = value;
                 },
                 onValidate: (value) {
                   if (value?.isEmpty ?? true) {
@@ -55,7 +59,7 @@ class _ModalSheetState extends State<ModalSheet> {
                 hintColor: Colors.grey,
               ),
               CustomTextFormField(
-                onSaved: (value) {
+                onChanged: (value) {
                   content = value;
                 },
                 onValidate: (value) {
@@ -86,19 +90,22 @@ class _ModalSheetState extends State<ModalSheet> {
                 style: theme.textTheme.bodySmall!.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 50),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: kPrimaryColor,
-                    fixedSize: Size(mediaQuery.size.width * 0.8, 20)),
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    debugPrint('done...');
-                  }
-                },
-                child: const Text(
-                  'Add',
-                  style: TextStyle(
-                    color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                      fixedSize: Size(mediaQuery.size.width * 0.8, 20)),
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      addTask().then((value) => Navigator.pop(context));
+                    }
+                  },
+                  child: Text(
+                    widget.buttonName, // Add
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               )
@@ -107,5 +114,23 @@ class _ModalSheetState extends State<ModalSheet> {
         ),
       ),
     );
+  }
+
+  Future<void> addTask() async {
+    EasyLoading.show();
+    try {
+      await tasks.add(
+        {
+          'title': task,
+          'content': content,
+          'time': DateTime.now(),
+        },
+      );
+      EasyLoading.dismiss();
+      log('Added Success');
+    } catch (e) {
+      EasyLoading.dismiss();
+      log("Failed to add user: ${e.toString()}");
+    }
   }
 }

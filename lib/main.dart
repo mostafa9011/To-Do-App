@@ -1,12 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:todo_app/app/splash/pages/splash_view.dart';
 import 'package:todo_app/config/constants/appthem_manager.dart';
 import 'package:todo_app/config/constants/constants.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_state.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     BlocProvider(
       create: (context) => CubitSettings(LightState()),
@@ -30,6 +37,7 @@ class MyApp extends StatelessWidget {
         themeMode: vm.currentTheme,
         routes: kScreens,
         initialRoute: SplashView.id,
+        builder: EasyLoading.init(),
       ),
     );
   }
