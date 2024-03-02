@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +38,10 @@ class MyApp extends StatelessWidget {
         themeMode: vm.currentTheme,
         routes: kScreens,
         initialRoute: SplashView.id,
-        builder: EasyLoading.init(),
+        builder: EasyLoading.init(
+          builder: BotToastInit(),
+        ),
+        navigatorObservers: [BotToastNavigatorObserver()],
       ),
     );
   }

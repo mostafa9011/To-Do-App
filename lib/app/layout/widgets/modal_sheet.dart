@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:todo_app/config/constants/constants.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
 import 'package:todo_app/config/widgets/custom_text_field.dart';
+
+import '../../../config/services/snake_bar_services.dart';
 
 class ModalSheet extends StatefulWidget {
   const ModalSheet({super.key, required this.title, required this.buttonName});
@@ -98,7 +101,14 @@ class _ModalSheetState extends State<ModalSheet> {
                       fixedSize: Size(mediaQuery.size.width * 0.8, 20)),
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      addTask().then((value) => Navigator.pop(context));
+                      addTask().then(
+                        (value) {
+                          Navigator.pop(context);
+                          SnackBarService.showSuccessMessage(
+                              msg: 'Added Succsess',
+                              color: theme.scaffoldBackgroundColor);
+                        },
+                      );
                     }
                   },
                   child: Text(
@@ -127,9 +137,10 @@ class _ModalSheetState extends State<ModalSheet> {
         },
       );
       EasyLoading.dismiss();
-      log('Added Success');
     } catch (e) {
       EasyLoading.dismiss();
+      BotToast.showSimpleNotification(title: 'Feild');
+      SnackBarService.showErrorMessage('Feild!');
       log("Failed to add user: ${e.toString()}");
     }
   }
