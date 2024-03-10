@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:todo_app/app/splash/pages/splash_view.dart';
+import 'package:todo_app/app/splash/pages/splash_view.dart'; 
 import 'package:todo_app/config/constants/appthem_manager.dart';
 import 'package:todo_app/config/constants/constants.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';

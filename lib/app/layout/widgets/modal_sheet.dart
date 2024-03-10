@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_app/config/constants/constants.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
 import 'package:todo_app/config/widgets/custom_text_field.dart';
@@ -23,6 +24,7 @@ class _ModalSheetState extends State<ModalSheet> {
   String? task, content, date;
   CollectionReference tasks = FirebaseFirestore.instance.collection('Tasks');
   GlobalKey<FormState> formKey = GlobalKey();
+  DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +33,8 @@ class _ModalSheetState extends State<ModalSheet> {
     var vm = BlocProvider.of<CubitSettings>(context);
     return Container(
       padding: EdgeInsets.only(
-          left: 40,
-          right: 40,
+          left: 25,
+          right: 25,
           top: 40,
           bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Form(
@@ -88,11 +90,29 @@ class _ModalSheetState extends State<ModalSheet> {
                   ),
                 ],
               ),
-              Text(
-                '10:00 pm',
-                style: theme.textTheme.bodySmall!.copyWith(color: Colors.grey),
+              TextButton(
+                onPressed: () async {
+                  var currentSelectedDate = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(
+                      const Duration(days: 365),
+                    ),
+                    currentDate: DateTime.now(),
+                    initialDate: selectedDate,
+                  );
+                  if (currentSelectedDate == null) return;
+                  setState(() {
+                    selectedDate = currentSelectedDate;
+                  });
+                },
+                child: Text(
+                  DateFormat.yMMMd().format(selectedDate),
+                  style:
+                      theme.textTheme.bodySmall!.copyWith(color: Colors.grey),
+                ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.only(bottom: 40),
                 child: ElevatedButton(
@@ -133,7 +153,8 @@ class _ModalSheetState extends State<ModalSheet> {
         {
           'title': task,
           'content': content,
-          'time': DateTime.now(),
+          'time': selectedDate,
+          'id': tasks.doc().id,
         },
       );
       EasyLoading.dismiss();
