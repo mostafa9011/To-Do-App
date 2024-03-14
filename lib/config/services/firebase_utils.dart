@@ -1,46 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_app/app/tasks/models/task_model.dart';
+import 'package:todo_app/config/constants/extract_time.dart';
 
-class FirestoreUtils {
-  static CollectionReference<TaskModel> getCollection() {
-    // we get imstance from firestore then we get collection reference
-    return FirebaseFirestore.instance
-        .collection("Tasks")
-        .withConverter<TaskModel>(
-          fromFirestore: (snapshot, _) => TaskModel.fromJson(snapshot.data()!),
-          toFirestore: (value, _) => value.toFirestore(),
+class FirestoreManager {
+  CollectionReference<TaskModel> getCollectionRef() {
+    var db = FirebaseFirestore.instance;
+    return db.collection('Tasks').withConverter<TaskModel>(
+          fromFirestore: (snapshot, options) =>
+              TaskModel.fromJson(snapshot.data()),
+          toFirestore: (value, options) => value.toFirestore(),
         );
-
-    // convert map to object
-    // convert object to  map<String, dynamic>
   }
 
-  static Future<void> addDataToFirestore(TaskModel model) {
-    var collectionRef = getCollection();
+  Future<void> addTask(TaskModel task) {
+    var collectionRef = getCollectionRef();
     var docRef = collectionRef.doc();
-
-    //
-    model.id = docRef.id;
-
-    return docRef.set(model);
+    task.id = docRef.id;
+    return docRef.set(task);
   }
 
-  static Future<void> deleteDataFromFirestore(TaskModel model) {
-    var collectionRef = getCollection();
-    return collectionRef.doc(model.id).delete();
+  Future<void> deleteTask(String id) {
+    var collectionRef = getCollectionRef();
+    return collectionRef.doc(id).delete();
   }
 
-  static Future<List<TaskModel>> getDataFromFirestore() async {
-    var snapshot = await getCollection().get();
-    return snapshot.docs.map((element) => element.data()).toList();
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future<void> updateTask({required TaskModel taskModel, required String id}) {
+    return users
+        .doc(id)
+        .update(taskModel.toFirestore())
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
-  // static Stream<QuerySnapshot<TaskModel>> getRealTimeDataFromFirestore(
-  //     DateTime dateTime) {
-  //   var snapshot = getCollection()
-  //       .where("dateTime",
-  //           isEqualTo: ExtractDate.extractDate(dateTime).millisecondsSinceEpoch)
-  //       .snapshots();
-  //   return snapshot;
-  // }
+  Stream<QuerySnapshot<TaskModel>> getData(DateTime dateTime) {
+    var collectionRef = getCollectionRef()
+        .where('time', isEqualTo: extractTime(dateTime).millisecondsSinceEpoch);
+    // var data =  collectionRef.get();
+    return collectionRef.snapshots();
+  }
 }

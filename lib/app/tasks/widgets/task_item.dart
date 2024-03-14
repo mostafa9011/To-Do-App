@@ -1,10 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:todo_app/app/edit_tasks/pages/edit_task_view.dart';
 import 'package:todo_app/app/tasks/models/task_model.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
+
+import '../../../config/services/firebase_utils.dart';
 
 class TaskItem extends StatelessWidget {
   const TaskItem({
@@ -15,7 +19,7 @@ class TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference tasks = FirebaseFirestore.instance.collection('Tasks');
+    // CollectionReference tasks = FirebaseFirestore.instance.collection('Tasks');
     var mediaQuery = MediaQuery.of(context).size;
     var theme = Theme.of(context);
     var vm = BlocProvider.of<CubitSettings>(context);
@@ -40,12 +44,18 @@ class TaskItem extends StatelessWidget {
             children: [
               SlidableAction(
                 onPressed: (context) {
-                  tasks
-                      .doc()
-                      .delete()
-                      .then((value) => debugPrint("User Deleted"))
-                      .catchError((error) =>
-                          debugPrint("Failed to delete user: $error"));
+                  EasyLoading.show();
+                  FirestoreManager().deleteTask(task.id!).then(
+                    (value) {
+                      EasyLoading.dismiss();
+                      log("Task Deleted");
+                    },
+                  ).catchError(
+                    (error) {
+                      EasyLoading.dismiss();
+                      log("Failed to delete Task: $error");
+                    },
+                  );
                 },
                 backgroundColor: const Color(0xFFFE4A49),
                 icon: Icons.delete,
@@ -75,34 +85,45 @@ class TaskItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      task.title,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.alarm,
-                          size: 20,
-                          color: vm.isLight() ? Colors.black : Colors.white,
+                Expanded(
+                  flex: 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        task.title,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.primaryColor,
                         ),
-                        const SizedBox(width: 5),
-                        Text(
-                          "10:30 Am",
-                          style: theme.textTheme.bodySmall?.copyWith(
+                      ),
+                      Text(
+                        task.content,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.grey,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.alarm,
+                            size: 20,
                             color: vm.isLight() ? Colors.black : Colors.white,
                           ),
-                        ),
-                      ],
-                    )
-                  ],
+                          const SizedBox(width: 5),
+                          Text(
+                            "10:30 Am",
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: vm.isLight() ? Colors.black : Colors.white,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 InkWell(

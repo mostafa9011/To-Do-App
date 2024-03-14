@@ -12,16 +12,16 @@ import 'package:todo_app/config/widgets/custom_text_field.dart';
 
 import '../../../config/services/snake_bar_services.dart';
 
-class ModalSheet extends StatefulWidget {
-  const ModalSheet({super.key, required this.title, required this.buttonName});
+class EditSheet extends StatefulWidget {
+  const EditSheet({super.key, required this.title, required this.buttonName});
   final String title;
   final String buttonName;
 
   @override
-  State<ModalSheet> createState() => _ModalSheetState();
+  State<EditSheet> createState() => _EditSheetState();
 }
 
-class _ModalSheetState extends State<ModalSheet> {
+class _EditSheetState extends State<EditSheet> {
   String? title, content;
   DateTime time = DateTime.now();
   CollectionReference tasks = FirebaseFirestore.instance.collection('Tasks');
