@@ -7,6 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:todo_app/app/edit_tasks/pages/edit_task_view.dart';
 import 'package:todo_app/app/tasks/models/task_model.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
+import 'package:todo_app/config/services/snake_bar_services.dart';
 
 import '../../../config/services/firebase_utils.dart';
 
@@ -26,7 +27,7 @@ class TaskItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, EditTaskView.id);
+        Navigator.pushNamed(context, EditTaskView.id, arguments: task);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8.0),
@@ -48,6 +49,7 @@ class TaskItem extends StatelessWidget {
                   FirestoreManager().deleteTask(task.id!).then(
                     (value) {
                       EasyLoading.dismiss();
+                      SnackBarService.showSuccessMessage('Deleted Successful ');
                       log("Task Deleted");
                     },
                   ).catchError(
@@ -115,7 +117,8 @@ class TaskItem extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            "10:30 Am",
+                            '${task.time.year}-${task.time.month}-${task.time.day}',
+                            // extractTime(task.time).toString(),
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: vm.isLight() ? Colors.black : Colors.white,
                             ),

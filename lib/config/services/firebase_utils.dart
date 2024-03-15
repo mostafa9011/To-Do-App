@@ -24,14 +24,11 @@ class FirestoreManager {
     return collectionRef.doc(id).delete();
   }
 
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-
   Future<void> updateTask({required TaskModel taskModel, required String id}) {
-    return users
-        .doc(id)
-        .update(taskModel.toFirestore())
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
+    var collectionRef = getCollectionRef();
+    return collectionRef.doc(id).update(
+          taskModel.toFirestore(),
+        );
   }
 
   Stream<QuerySnapshot<TaskModel>> getData(DateTime dateTime) {

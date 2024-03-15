@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
 
 class CustomTextFormField extends StatefulWidget {
   final TextEditingController? controller;
@@ -56,6 +58,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var vm = BlocProvider.of<CubitSettings>(context);
     return TextFormField(
       controller: widget.controller,
       initialValue: widget.value,
@@ -73,7 +76,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       enabled: widget.enabled,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.black),
+      style: theme.textTheme.bodyLarge?.copyWith(
+        color: vm.isLight() ? Colors.black : Colors.white,
+      ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       textInputAction: widget.action ?? TextInputAction.done,
       focusNode: widget.focusNode,

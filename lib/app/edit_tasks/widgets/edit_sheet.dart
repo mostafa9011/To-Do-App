@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,9 +15,15 @@ import 'package:todo_app/config/widgets/custom_text_field.dart';
 import '../../../config/services/snake_bar_services.dart';
 
 class EditSheet extends StatefulWidget {
-  const EditSheet({super.key, required this.title, required this.buttonName});
+  const EditSheet({
+    super.key,
+    required this.title,
+    required this.buttonName,
+    required this.task,
+  });
   final String title;
   final String buttonName;
+  final TaskModel task;
 
   @override
   State<EditSheet> createState() => _EditSheetState();
@@ -63,7 +71,7 @@ class _EditSheetState extends State<EditSheet> {
                     return null;
                   }
                 },
-                hint: 'Enter your task.',
+                hint: widget.task.title,
                 hintColor: Colors.grey,
               ),
               CustomTextFormField(
@@ -77,7 +85,7 @@ class _EditSheetState extends State<EditSheet> {
                     return null;
                   }
                 },
-                hint: 'Enter content',
+                hint: widget.task.content,
                 hintColor: Colors.grey,
                 maxLines: 3,
                 maxLength: 150,
@@ -125,22 +133,47 @@ class _EditSheetState extends State<EditSheet> {
                   ),
                   onPressed: () async {
                     TaskModel task = TaskModel(
-                      title: title!,
-                      content: content!,
+                      title: title ?? widget.task.title,
+                      content: content ?? widget.task.content,
                       time: extractTime(vm.selectedDate),
                       isDone: false,
                     );
                     EasyLoading.show();
-                    firestoreManage.addTask(task).then(
+                    firestoreManage
+                        .updateTask(
+                      taskModel: task,
+                      id: widget.task.id!,
+                    )
+                        .then(
                       (value) {
+                        log("User Updated");
                         EasyLoading.dismiss();
                         Navigator.pop(context);
                         SnackBarService.showSuccessMessage(
-                          msg: 'Added Succsess',
-                          color: theme.scaffoldBackgroundColor,
+                          'Updated Succsessful',
+                          // color: theme.scaffoldBackgroundColor,
                         );
                       },
+                    ).catchError(
+                      (error) {
+                        log("Failed to update user: $error");
+                      },
                     );
+
+                    //             .then(
+                    //   (value) => print("User Updated"),
+                    // )
+                    // firestoreManage.addTask(task)
+                    // .then(
+                    //   (value) {
+                    //     EasyLoading.dismiss();
+                    //     Navigator.pop(context);
+                    //     SnackBarService.showSuccessMessage(
+                    //       msg: 'Added Succsess',
+                    //       color: theme.scaffoldBackgroundColor,
+                    //     );
+                    //   },
+                    // );
                   },
                   // onPressed: () async {
                   //   if (formKey.currentState!.validate()) {

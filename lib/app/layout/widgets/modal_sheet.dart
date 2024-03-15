@@ -136,24 +136,12 @@ class _ModalSheetState extends State<ModalSheet> {
                         EasyLoading.dismiss();
                         Navigator.pop(context);
                         SnackBarService.showSuccessMessage(
-                          msg: 'Added Succsess',
-                          color: theme.scaffoldBackgroundColor,
+                          'Added Succsessful',
+                          // color: theme.scaffoldBackgroundColor,
                         );
                       },
                     );
                   },
-                  // onPressed: () async {
-                  //   if (formKey.currentState!.validate()) {
-                  //     addTask().then(
-                  //       (value) {
-                  //         Navigator.pop(context);
-                  //         SnackBarService.showSuccessMessage(
-                  //             msg: 'Added Succsess',
-                  //             color: theme.scaffoldBackgroundColor);
-                  //       },
-                  //     );
-                  //   }
-                  // },
                   child: Text(
                     widget.buttonName, // Add
                     style: const TextStyle(
@@ -168,25 +156,4 @@ class _ModalSheetState extends State<ModalSheet> {
       ),
     );
   }
-
-  // Future<void> addTask(DateTime selectedDateTime) async {
-  //   EasyLoading.show();
-  //   try {
-  //     var doc = tasks.doc();
-  //     await tasks.add(
-  //       {
-  //         'title': title,
-  //         'content': content,
-  //         'time': selectedDateTime,
-  //         'id': doc.id,
-  //       },
-  //     );
-  //     EasyLoading.dismiss();
-  //   } catch (e) {
-  //     EasyLoading.dismiss();
-  //     BotToast.showSimpleNotification(title: 'Feild');
-  //     SnackBarService.showErrorMessage('Feild!');
-  //     log("Failed to add user: ${e.toString()}");
-  //   }
-  // }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app/app/layout/widgets/modal_sheet.dart';
+import 'package:todo_app/app/tasks/models/task_model.dart';
 import 'package:todo_app/app/tasks/widgets/custom_app_bar_title.dart';
 import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
+
+import '../widgets/edit_sheet.dart';
 
 class EditTaskView extends StatelessWidget {
   const EditTaskView({super.key});
@@ -12,6 +14,7 @@ class EditTaskView extends StatelessWidget {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context);
     var vm = BlocProvider.of<CubitSettings>(context);
+    var task = ModalRoute.of(context)!.settings.arguments as TaskModel;
 
     return Scaffold(
       body: Stack(
@@ -27,9 +30,10 @@ class EditTaskView extends StatelessWidget {
                 color: vm.isLight() ? Colors.white : const Color(0xff141922),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const ModalSheet(
+              child: EditSheet(
                 title: 'Edit Task',
                 buttonName: 'Save Edit',
+                task: task,
               ),
             ),
           ),
