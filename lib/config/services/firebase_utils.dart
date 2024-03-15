@@ -24,11 +24,13 @@ class FirestoreManager {
     return collectionRef.doc(id).delete();
   }
 
-  Future<void> updateTask({required TaskModel taskModel, required String id}) {
+  Future<void> updateTask({required TaskModel taskModel}) {
     var collectionRef = getCollectionRef();
-    return collectionRef.doc(id).update(
-          taskModel.toFirestore(),
-        );
+    var docRef = collectionRef.doc(taskModel.id);
+
+    return docRef.update(
+      taskModel.toFirestore(),
+    );
   }
 
   Stream<QuerySnapshot<TaskModel>> getData(DateTime dateTime) {

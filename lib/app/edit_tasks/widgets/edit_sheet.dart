@@ -133,6 +133,7 @@ class _EditSheetState extends State<EditSheet> {
                   ),
                   onPressed: () async {
                     TaskModel task = TaskModel(
+                      id: widget.task.id,
                       title: title ?? widget.task.title,
                       content: content ?? widget.task.content,
                       time: extractTime(vm.selectedDate),
@@ -142,7 +143,6 @@ class _EditSheetState extends State<EditSheet> {
                     firestoreManage
                         .updateTask(
                       taskModel: task,
-                      id: widget.task.id!,
                     )
                         .then(
                       (value) {
