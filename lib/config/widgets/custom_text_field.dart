@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/config/cubits/settings_cubit/settings_cubit.dart';
 
-class CustomTextField extends StatefulWidget {
+class CustomTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final bool? isPassword;
   final String? hint;
@@ -19,7 +21,7 @@ class CustomTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final Color? hintColor;
 
-  const CustomTextField({
+  const CustomTextFormField({
     super.key,
     this.controller,
     this.isPassword,
@@ -47,15 +49,16 @@ class CustomTextField extends StatefulWidget {
   });
 
   @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
   bool obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var vm = BlocProvider.of<CubitSettings>(context);
     return TextFormField(
       controller: widget.controller,
       initialValue: widget.value,
@@ -73,7 +76,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       enabled: widget.enabled,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.black),
+      style: theme.textTheme.bodyLarge?.copyWith(
+        color: vm.isLight() ? Colors.black : Colors.white,
+      ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       textInputAction: widget.action ?? TextInputAction.done,
       focusNode: widget.focusNode,

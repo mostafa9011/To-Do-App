@@ -31,7 +31,9 @@ class SettingsView extends StatelessWidget {
         return Scaffold(
           body: Column(
             children: [
-              const CustomAppBarTitle(title: 'Settings',),
+              const CustomAppBarTitle(
+                title: 'Settings',
+              ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),

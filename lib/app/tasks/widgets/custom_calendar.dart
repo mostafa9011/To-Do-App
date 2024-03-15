@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,6 @@ class CustomCalendar extends StatefulWidget {
 class _CustomCalendarState extends State<CustomCalendar> {
   final EasyInfiniteDateTimelineController controller =
       EasyInfiniteDateTimelineController();
-  DateTime focusDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +68,25 @@ class _CustomCalendarState extends State<CustomCalendar> {
       ),
       controller: controller,
       firstDate: DateTime(2024),
-      focusDate: focusDate,
+      focusDate: vm.focusDate,
       lastDate: DateTime(2025),
       onDateChange: (selectedDate) {
         setState(() {
-          focusDate = selectedDate;
+          vm.focusDate = selectedDate;
+          vm.selectedDate = vm.focusDate;
+          vm.onDateChanged();
+          log('focus date = ${vm.focusDate.toString()}');
+          log('selected date = ${vm.selectedDate.toString()}');
         });
       },
+      // (selectedDate) {
+      //   setState(() {
+      //     vm.focusDate = selectedDate;
+      //     vm.selectedDate = extractTime(vm.focusDate);
+      //     log('selected date = ${vm.selectedDate.toString()}');
+      //     log('update date = ${vm.updateDate.toString()}');
+      //   });
+      // },
     );
   }
 }
